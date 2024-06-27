@@ -21,12 +21,12 @@ class _LoginPageState extends State<LoginPage> {
         ),
         body: Container(
           decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                  'assets/images/bg.jpg'), // Replace with your image path
-              fit: BoxFit.cover,
-            ),
-          ),
+              // image: DecorationImage(
+              //   image: AssetImage(
+              //       'assets/images/bg.jpg'), // Replace with your image path
+              //   fit: BoxFit.cover,
+              // ),
+              ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
@@ -35,11 +35,11 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Image(
-                    image: AssetImage('assets/images/logo.png'),
-                    height: 200,
-                    width: 200,
-                  ),
+                  // const Image(
+                  //   image: AssetImage('assets/images/logo.png'),
+                  //   height: 200,
+                  //   width: 200,
+                  // ),
                   TextFormField(
                     decoration: const InputDecoration(
                       labelText: 'Username',

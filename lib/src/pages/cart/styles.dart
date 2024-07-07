@@ -55,4 +55,13 @@ abstract class CartStyle {
             BorderRadius.circular(8.0), // Adjust value for desired roundness
       ),
       backgroundColor: Color.fromARGB(255, 255, 94, 0));
+
+  static ButtonStyle btnEditAccount = TextButton.styleFrom(
+      minimumSize: Size(400, 60),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
+      shape: RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.circular(8.0), // Adjust value for desired roundness
+      ),
+      backgroundColor: Color.fromARGB(255, 255, 94, 0));
 }

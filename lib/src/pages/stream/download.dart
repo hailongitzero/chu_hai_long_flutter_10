@@ -64,7 +64,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 }
 
                 if (!snapshot.hasData) {
-                  return Text('');
+                  return const Text('no data');
                 }
 
                 _items.add(snapshot.data!);
@@ -74,13 +74,13 @@ class _DownloadPageState extends State<DownloadPage> {
                     return Column(
                       children: [
                         ListTile(
-                      title: Text(_items[index]),
-                    ),
-                    Center(
-                      child: CircularProgressIndicator(
-                          semanticsLabel: _items.length.toString()))
+                          title: Text(_items[index]),
+                        ),
+                        Center(
+                            child: CircularProgressIndicator(
+                                semanticsLabel: _items.length.toString()))
                       ],
-                    )
+                    );
                   },
                 );
               },

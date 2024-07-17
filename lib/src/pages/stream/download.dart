@@ -18,28 +18,56 @@ class DownloadPage extends StatefulWidget {
 }
 
 class _DownloadPageState extends State<DownloadPage> {
-  final _items = <String>[];
   final _random = Random();
-  final _streamController = StreamController<String>();
+  late List<Download> _download;
+
+  @override
+  initState() {
+    super.initState();
+    _download = [
+      Download(
+          'file 1', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 2', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 3', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 4', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 5', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 6', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 7', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 8', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 9', _random.nextInt(10) + 5, 0, StreamController<String>()),
+      Download(
+          'file 10', _random.nextInt(10) + 5, 0, StreamController<String>()),
+    ];
+  }
 
   @override
   void dispose() {
-    _streamController.close();
     super.dispose();
   }
 
-  void _addItemStream() async {
+  Future<void> _downloadStart() async {
     int delay = _random.nextInt(5) + 10;
-    print(delay);
     int start = 0;
-    while (start < delay) {
-      if (start >= delay) {
+    int step = 0;
+    while (start <= delay) {
+      if (start > delay) {
         continue;
       }
-      start += 2;
-      await Future.delayed(const Duration(seconds: 2));
-      String newItem = 'file download no ${_items.length + 1}';
-      _streamController.add(newItem);
+      start++;
+      await Future.delayed(const Duration(seconds: 1));
+      for (var i = 0; i < _download.length; i++) {
+        step = ((start / _download[i].size) * 100).round();
+        _download[i].progress = step >= 100 ? 100 : step as double;
+        _download[i].streamControler.add(_download[i].progress.toString());
+      }
     }
   }
 
@@ -56,42 +84,46 @@ class _DownloadPageState extends State<DownloadPage> {
       child: Column(
         children: [
           Expanded(
-            child: StreamBuilder<String>(
-              stream: _streamController.stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-
-                if (!snapshot.hasData) {
-                  return const Text('no data');
-                }
-
-                _items.add(snapshot.data!);
-                return ListView.builder(
-                  itemCount: _items.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        ListTile(
-                          title: Text(_items[index]),
-                        ),
-                        Center(
-                            child: CircularProgressIndicator(
-                                semanticsLabel: _items.length.toString()))
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+              child: ListView.builder(
+            itemCount: _download.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  Center(
+                      child: StreamBuilder<String>(
+                    stream: _download[index].streamControler.stream,
+                    builder: (context, snapshot) {
+                      return Column(
+                        children: [
+                          Center(
+                              child: LinearProgressIndicator(
+                                  value: _download[index].progress / 100)),
+                          ListTile(
+                            title: Text(
+                                'File name: ${_download[index].name} - Percent: ${snapshot.data ?? 0}%'),
+                          )
+                        ],
+                      );
+                    },
+                  )),
+                ],
+              );
+            },
+          )),
           ElevatedButton(
-            onPressed: () => _addItemStream(),
+            onPressed: () => _downloadStart(),
             child: const Text('Download'),
           ),
         ],
       ),
     );
   }
+}
+
+class Download {
+  String name;
+  double size;
+  double progress;
+  StreamController<String> streamControler;
+  Download(this.name, this.size, this.progress, this.streamControler);
 }

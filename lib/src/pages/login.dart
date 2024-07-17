@@ -9,8 +9,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  String _username = "";
-  String _password = "";
+  // ignore: unused_field
+  late String _username = "";
+  // ignore: unused_field
+  late String _password = "";
   int wrongCnt = 0;
 
   @override

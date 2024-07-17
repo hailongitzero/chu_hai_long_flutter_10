@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class LabThree extends StatefulWidget {
   static const title = "LabOne";
@@ -17,11 +16,20 @@ class LabThree extends StatefulWidget {
 }
 
 class _LabThreeState extends State<LabThree> {
-  late String _status = 'INIT';
+  late String showtime;
+  final stream =
+      Stream.periodic(const Duration(seconds: 1), (count) => count).take(180);
 
   @override
   void initState() {
     super.initState();
+    stream.listen((count) {
+      setState(() {
+        showtime = count ~/ 60 > 0
+            ? '${count ~/ 60}p${count % 60}s'
+            : '${count % 60}s';
+      });
+    });
   }
 
   @override
@@ -37,23 +45,6 @@ class _LabThreeState extends State<LabThree> {
     );
   }
 
-  Future<int> submitting(int seconds) async {
-    await Future.delayed(Duration(seconds: seconds));
-    return seconds;
-  }
-
-  _submit() {
-    setState(() {
-      _status = 'START';
-    });
-    Stream stream = Stream.fromFuture(submitting(2));
-    stream.listen((event) {
-      setState(() {
-        _status = 'FINISH';
-      });
-    });
-  }
-
   Widget _buildBody() {
     return Padding(
       padding: const EdgeInsets.all(40),
@@ -61,12 +52,8 @@ class _LabThreeState extends State<LabThree> {
         children: [
           Center(
             child: Expanded(
-              child: Text(_status == 'FINISH' ? 'Done' : 'Start'),
+              child: Text(showtime),
             ),
-          ),
-          ElevatedButton(
-            onPressed: _status == 'START' ? null : () => _submit(),
-            child: const Text('Submit'),
           ),
         ],
       ),

@@ -2,8 +2,7 @@ import 'package:chu_hai_long_flutter_10/src/pages/cart/cart.dart';
 import 'package:chu_hai_long_flutter_10/src/pages/favorite/favorite.dart';
 import 'package:chu_hai_long_flutter_10/src/pages/profile/profile.dart';
 import 'package:chu_hai_long_flutter_10/src/pages/shop.dart';
-import 'package:chu_hai_long_flutter_10/src/pages/stream/lab_one.dart';
-import 'package:chu_hai_long_flutter_10/src/pages/stream/lab_two.dart';
+import 'package:chu_hai_long_flutter_10/src/pages/stream/lab_four.dart';
 import 'package:flutter/cupertino.dart';
 
 class NavigatorBuilder extends StatefulWidget {
@@ -52,7 +51,7 @@ class _NavigatorBuilderState extends State<NavigatorBuilder> {
         return switch (index) {
           0 => CupertinoTabView(
               // defaultTitle: ShopPage.title,
-              builder: (context) => LabTwo(
+              builder: (context) => LabFour(
                 key: shopKey,
               ),
             ),

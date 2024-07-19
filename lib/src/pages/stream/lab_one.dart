@@ -16,15 +16,12 @@ class LabOne extends StatefulWidget {
 }
 
 class _LabOneState extends State<LabOne> {
-  late int _count = 0;
-  // StreamSubscription<int>? _subscription;
-  final stream =
+  late Stream stream =
       Stream.periodic(const Duration(seconds: 5), (count) => count).take(12);
 
   @override
   void initState() {
     super.initState();
-    _counting();
   }
 
   @override
@@ -40,22 +37,17 @@ class _LabOneState extends State<LabOne> {
     );
   }
 
-  _counting() {
-    stream.listen((count) {
-      setState(() {
-        _count = count;
-      });
-    });
-  }
-
   Widget _buildBody() {
     return Padding(
       padding: const EdgeInsets.all(40),
       child: Column(
         children: [
-          Expanded(
-            child: Text(_count.toString()),
-          ),
+          StreamBuilder(
+              stream: stream,
+              builder: (context, snapshot) {
+                return Text(
+                    snapshot.data != null ? snapshot.data.toString() : '0');
+              })
         ],
       ),
     );

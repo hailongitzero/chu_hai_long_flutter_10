@@ -23,13 +23,10 @@ class _LabThreeState extends State<LabThree> {
   @override
   void initState() {
     super.initState();
-    stream.listen((count) {
-      setState(() {
-        showtime = count ~/ 60 > 0
-            ? '${count ~/ 60}p${count % 60}s'
-            : '${count % 60}s';
-      });
-    });
+  }
+
+  String timeCoverter(int time) {
+    return time ~/ 60 > 0 ? '${time ~/ 60}p${time % 60}s' : '${time % 60}s';
   }
 
   @override
@@ -51,9 +48,13 @@ class _LabThreeState extends State<LabThree> {
       child: Column(
         children: [
           Center(
-            child: Expanded(
-              child: Text(showtime),
-            ),
+            child: StreamBuilder<int>(
+                stream: stream,
+                builder: (context, snapshot) {
+                  return Expanded(
+                    child: Text(timeCoverter(snapshot.data ?? 0)),
+                  );
+                }),
           ),
         ],
       ),

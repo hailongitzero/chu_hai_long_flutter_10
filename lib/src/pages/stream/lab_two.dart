@@ -17,7 +17,7 @@ class LabTwo extends StatefulWidget {
 }
 
 class _LabTwoState extends State<LabTwo> {
-  late String _status = 'INIT';
+  StreamController<String> streamControler = StreamController<String>();
 
   @override
   void initState() {
@@ -26,7 +26,6 @@ class _LabTwoState extends State<LabTwo> {
 
   @override
   void dispose() {
-    debugPrint('disposed');
     super.dispose();
   }
 
@@ -37,21 +36,10 @@ class _LabTwoState extends State<LabTwo> {
     );
   }
 
-  Future<int> submitting(int seconds) async {
-    await Future.delayed(Duration(seconds: seconds));
-    return seconds;
-  }
-
-  _submit() {
-    setState(() {
-      _status = 'START';
-    });
-    Stream stream = Stream.fromFuture(submitting(2));
-    stream.listen((event) {
-      setState(() {
-        _status = 'FINISH';
-      });
-    });
+  Future<void> _submit() async {
+    streamControler.add('START');
+    await Future.delayed(const Duration(seconds: 2));
+    streamControler.add('FINISH');
   }
 
   Widget _buildBody() {
@@ -59,15 +47,20 @@ class _LabTwoState extends State<LabTwo> {
       padding: const EdgeInsets.all(40),
       child: Column(
         children: [
-          Center(
-            child: Expanded(
-              child: Text(_status == 'FINISH' ? 'Done' : 'Start'),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: _status == 'START' ? null : () => _submit(),
-            child: const Text('Submit'),
-          ),
+          StreamBuilder(
+              stream: streamControler.stream,
+              builder: (context, snapshot) {
+                return Column(
+                  children: [
+                    Text(snapshot.data == 'FINISH' ? 'Done' : 'Start'),
+                    ElevatedButton(
+                      onPressed:
+                          snapshot.data == 'START' ? null : () => _submit(),
+                      child: const Text('Submit'),
+                    ),
+                  ],
+                );
+              }),
         ],
       ),
     );

@@ -18,9 +18,11 @@ class LabFour extends StatefulWidget {
 
 class _LabFourState extends State<LabFour> {
   late List<String> history = [];
-  bool showHistory = false;
-  double _currentSliderValue = 0.0;
-  StreamController<double> streamController = StreamController<double>();
+  // bool showHistory = false;
+  // double _currentSliderValue = 0.0;
+  Payload payload = Payload();
+  StreamController<StreamData> streamController =
+      StreamController<StreamData>();
 
   double factorial(int n) {
     if (n <= 1) return 1;
@@ -29,16 +31,17 @@ class _LabFourState extends State<LabFour> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<double>(
+    return StreamBuilder<StreamData>(
       stream: streamController.stream,
       builder: (context, snapshot) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('$_currentSliderValue! = ${snapshot.data ?? 0}'),
+            Text(
+                '${snapshot.data != null ? snapshot.data!.payload.step : 0}! = ${snapshot.data != null ? snapshot.data!.payload.result : 0}'),
             CupertinoSlider(
               key: const Key('slider'),
-              value: _currentSliderValue,
+              value: snapshot.data != null ? snapshot.data!.payload.step : 0,
               divisions: 10,
               max: 10,
               activeColor: CupertinoColors.activeBlue,
@@ -48,20 +51,19 @@ class _LabFourState extends State<LabFour> {
               // This is called when sliding has ended.
               onChangeEnd: (double value) {
                 double result = factorial(value as int);
-                streamController.add(result);
+                payload.result = result;
+                streamController.add(StreamData('Result', payload));
                 history.add('$value! = $result');
               },
               onChanged: (double value) {
-                setState(() {
-                  _currentSliderValue = value;
-                });
+                payload.step = value;
+                streamController.add(StreamData('Slide', payload));
               },
             ),
             ElevatedButton(
               onPressed: () {
-                setState(() {
-                  showHistory = !showHistory;
-                });
+                payload.showHistory = !payload.showHistory;
+                streamController.add(StreamData('History', payload));
               },
               child: const Text('History'),
             ),
@@ -69,7 +71,8 @@ class _LabFourState extends State<LabFour> {
               child: ListView.builder(
                 itemCount: history.length,
                 itemBuilder: (context, index) {
-                  if (showHistory) {
+                  if (snapshot.data?.payload != null &&
+                      snapshot.data!.payload.showHistory) {
                     return Center(
                       child: Card(
                         clipBehavior: Clip.hardEdge,
@@ -95,4 +98,18 @@ class _LabFourState extends State<LabFour> {
       },
     );
   }
+}
+
+class StreamData {
+  String type;
+  Payload payload;
+  StreamData(this.type, this.payload);
+}
+
+class Payload {
+  double result = 0;
+  double step = 0;
+  bool showHistory = false;
+
+  Payload({double result = 0, double step = 0, bool showHistory = false});
 }
